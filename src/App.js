@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import { Route, Switch, Redirect } from 'react-router-dom';
+import Header from './components/Header/Header'
+import HomePage from './pages/HomePage/HomePage'
+import SignInPage from './pages/SignInPage/SignInPage'
+class App extends Component {
+   
+    state = {
+        currentUser : null,
+        userInfo : null,
+    }
+   
+    setCurrentUser = (userInfo) => {
+        console.log(userInfo);
+        this.setState({currentUser : userInfo.username, userInfo})
+    }
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    render(){
+        const { currentUser, userInfo } = this.state;
+        console.log(currentUser);
+        return ( 
+            <div>
+                <Header currentUser={currentUser} />
+                <Switch>
+                    <Route exact path='/' render={() => <HomePage currentUser={currentUser} userInfo={userInfo}/>} />
+                    <Route 
+                        exact path='/login'
+                        render={() => currentUser ? (
+                            <Redirect to='/' />
+                        ) : (
+                            <SignInPage setCurrentUser={this.setCurrentUser}/>
+                        )}
+                    />
+                </Switch>
+            </div>
+            );
+    }
+
 }
-
+ 
 export default App;
